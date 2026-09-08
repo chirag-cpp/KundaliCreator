@@ -27,26 +27,69 @@ def strip_accents(s):
     return "".join(c for c in unicodedata.normalize("NFD", s)
                    if unicodedata.category(c) != "Mn").lower().strip()
 
-def geocode(town, state=None, country=None):
-    import geonamescache
+def geocode_candidates(town, country=None, limit=8):
+    """Return a ranked list of plausible matches for a place name.
+
+    Matching is progressively looser so that small towns absent from the
+    database still resolve to their nearest listed neighbour:
+      1. exact name match
+      2. the query contains a listed city name  ("Naya Nangal" -> "Nangal")
+      3. a listed city name contains the query  ("Ghazi" -> "Ghaziabad")
+      4. fuzzy match on spelling
+    """
+    import difflib, geonamescache
     gc = geonamescache.GeonamesCache()
-    t = strip_accents(town)
-    cands = [c for c in gc.get_cities().values() if strip_accents(c["name"]) == t]
-    if not cands:  # substring fallback
-        cands = [c for c in gc.get_cities().values() if t in strip_accents(c["name"])]
+    cities = list(gc.get_cities().values())
     if country:
         cc = country.strip().upper()
-        cands = [c for c in cands if c["countrycode"] == cc] or cands
-    if state and len(cands) > 1:
-        # match admin1 name via countries/us_states not available; prefer IN
-        pass
-    if not cands:
-        raise ValueError(f"Place '{town}' not found in offline database. "
-                         "Please supply --lat --lon --tz instead.")
-    cands.sort(key=lambda c: -c["population"])
-    c = cands[0]
-    return {"name": c["name"], "country": c["countrycode"],
-            "lat": c["latitude"], "lon": c["longitude"], "tz": c["timezone"]}
+        sub = [c for c in cities if c["countrycode"] == cc]
+        cities = sub or cities
+
+    q = strip_accents(town)
+    q_tokens = set(q.split())
+    # Generic Indian place-name suffixes that must never match on their own.
+    STOP = {"nagar", "pur", "puri", "ganj", "abad", "bagh", "vihar", "colony",
+            "east", "west", "north", "south", "new", "naya", "town", "city",
+            "khurd", "kalan", "road", "district", "tehsil", "village"}
+    scored = []
+    for c in cities:
+        n = strip_accents(c["name"])
+        if n == q:
+            s = 0
+        elif len(n) >= 4 and n not in STOP and n in q_tokens:
+            s = 1                      # "Nangal" is a word of "Naya Nangal"
+        elif len(n) >= 5 and n not in STOP and (n in q or q in n):
+            s = 2                      # "Ghazi" <-> "Ghaziabad"
+        else:
+            continue
+        scored.append((s, -c["population"], c))
+
+    if not scored:                      # last resort: fuzzy spelling match
+        names = {strip_accents(c["name"]): c for c in cities}
+        for m in difflib.get_close_matches(q, names.keys(), n=limit, cutoff=0.75):
+            scored.append((3, -names[m]["population"], names[m]))
+
+    scored.sort(key=lambda t: (t[0], t[1]))
+    out, seen = [], set()
+    for _, _, c in scored:
+        key = (c["name"], c["countrycode"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({"name": c["name"], "country": c["countrycode"],
+                    "lat": c["latitude"], "lon": c["longitude"],
+                    "tz": c["timezone"], "population": c["population"]})
+        if len(out) >= limit:
+            break
+    return out
+
+def geocode(town, state=None, country=None):
+    c = geocode_candidates(town, country, limit=1)
+    if not c:
+        raise ValueError(
+            f"Could not match '{town}' to any place in the offline database. "
+            "Try the nearest larger town, or enter latitude/longitude directly.")
+    return c[0]
 
 # ---------------------------------------------------------------- chart core
 class Chart:
