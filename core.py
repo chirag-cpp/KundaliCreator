@@ -8,6 +8,31 @@ from tables import *
 swe.set_sid_mode(swe.SIDM_LAHIRI)
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SIDEREAL | swe.FLG_SPEED
 
+# Swiss Ephemeris keeps the sidereal mode as global library state, and its
+# default is mode 0 = Fagan-Bradley. Anything that resets that state (a
+# swe.close(), a module reload, another library touching swisseph) would
+# silently produce a Western-sidereal chart. So we re-assert the mode
+# immediately before every calculation instead of trusting the import-time
+# call, and verify it at runtime.
+def _lahiri():
+    swe.set_sid_mode(swe.SIDM_LAHIRI)
+
+def ayanamsa_check(jd):
+    """Return (name, value) and raise if the active mode is not Lahiri."""
+    _lahiri()
+    name = swe.get_ayanamsa_name(swe.SIDM_LAHIRI)
+    val = swe.get_ayanamsa_ut(jd)
+    ref = swe.get_ayanamsa_ut(swe.julday(2000, 1, 1, 12))
+    # Lahiri is 23 deg 51' at J2000; Fagan-Bradley is 24 deg 44'. If the
+    # library ignored our mode this guard catches it rather than shipping a
+    # wrong chart.
+    if not (23.5 < ref < 24.1):
+        raise RuntimeError(
+            f"Sidereal mode is not Lahiri (J2000 ayanamsa = {ref:.4f} deg, "
+            f"expected ~23.857). The Swiss Ephemeris sidereal mode was reset "
+            f"by something else in this process.")
+    return name, val
+
 PLANET_IDS = {"Sun":swe.SUN,"Moon":swe.MOON,"Mars":swe.MARS,"Mercury":swe.MERCURY,
     "Jupiter":swe.JUPITER,"Venus":swe.VENUS,"Saturn":swe.SATURN,
     "Rahu":swe.TRUE_NODE}
@@ -104,12 +129,13 @@ class Chart:
         self.utc = u
         self.jd = swe.julday(u.year, u.month, u.day,
                              u.hour + u.minute/60 + u.second/3600)
-        self.ayanamsa = swe.get_ayanamsa_ut(self.jd)
+        self.ayanamsa_name, self.ayanamsa = ayanamsa_check(self.jd)
         self._positions()
         self._lagna()
         self._sunrise()
 
     def _positions(self):
+        _lahiri()
         self.pos, self.speed = {}, {}
         for p, pid in PLANET_IDS.items():
             xx, _ = swe.calc_ut(self.jd, pid, FLAGS)
@@ -118,6 +144,7 @@ class Chart:
         self.speed["Ketu"] = self.speed["Rahu"]
 
     def _lagna(self):
+        _lahiri()
         cusps, ascmc = swe.houses_ex(self.jd, self.lat, self.lon, b'W',
                                      swe.FLG_SIDEREAL)
         self.asc = norm(ascmc[0])

@@ -3,7 +3,7 @@
 import math
 import swisseph as swe
 from tables import *
-from core import norm
+from core import norm, _lahiri
 
 SAPTAVARGA = [1, 2, 3, 7, 9, 12, 30]
 BENEFIC = {"Jupiter", "Venus"}          # Mercury/Moon conditional; simplified fixed
@@ -125,6 +125,7 @@ def kala_bala(chart, p):
     out["Vara"] = 45.0 if p == chart.vara_lord else 0.0
     out["Hora"] = 60.0 if p == chart.hora_lord else 0.0
     # Ayana bala (declination-based)
+    _lahiri()
     xx, _ = swe.calc_ut(chart.jd, {"Sun":swe.SUN,"Moon":swe.MOON,"Mars":swe.MARS,
         "Mercury":swe.MERCURY,"Jupiter":swe.JUPITER,"Venus":swe.VENUS,
         "Saturn":swe.SATURN}[p], swe.FLG_SWIEPH | swe.FLG_EQUATORIAL)

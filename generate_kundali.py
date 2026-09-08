@@ -81,7 +81,7 @@ def build_report(**kw):
     w(f"Time of birth (local): {ch.local.strftime('%H:%M %Z')}")
     w(f"Place       : {loc['name']} {('('+loc['country']+')') if loc['country'] else ''}")
     w(f"Coordinates : {loc['lat']:.4f}N, {loc['lon']:.4f}E   Timezone: {loc['tz']}")
-    w(f"Ayanamsa    : Lahiri = {dms(ch.ayanamsa, sign_rel=False)}")
+    w(f"Ayanamsa    : {ch.ayanamsa_name} = {dms(ch.ayanamsa, sign_rel=False)}")
     w(f"House system: Whole sign (Rashi = Bhava)")
 
     # ---------------- numerology
