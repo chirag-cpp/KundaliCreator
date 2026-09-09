@@ -249,16 +249,38 @@ def build_report(**kw):
     # ---------------- Ashtakavarga
     sec("Ashtakavarga")
     bav, sav = ashtakavarga(ch)
-    w("Bhinnashtakavarga (bindus per sign, Aries..Pisces):")
-    w(f"{'Planet':<10}" + "".join(f"{s[:2]:>4}" for s in SIGNS) + f"{'Tot':>5}")
-    for p in ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]:
-        w(f"{p+' BAV':<10}" + "".join(f"{v:>4}" for v in bav[p]) +
-          f"{sum(bav[p]):>5}")
-    w(f"{'SAV':<10}" + "".join(f"{v:>4}" for v in sav) + f"{sum(sav):>5}")
-    w(); w("Sarvashtakavarga by house (H1 = Lagna sign):")
+    w("Row labels below are explicit. Note that many astrology apps head this")
+    w("grid 'RN' meaning RASHI number (Aries = 1), which is NOT the house")
+    w("number unless the Lagna happens to be Aries. Both layouts are given.")
+    w()
+    w("(a) Bhinnashtakavarga BY SIGN (Aries..Pisces):")
+    w(f"{'Sign':<12}" + "".join(f"{p[:2]:>4}" for p in
+      ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]) + f"{'Tot':>5}")
+    for s in range(12):
+        w(f"{SIGNS[s]:<12}" +
+          "".join(f"{bav[p][s]:>4}" for p in
+                  ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]) +
+          f"{sav[s]:>5}")
+    w(f"{'TOTAL':<12}" + "".join(f"{sum(bav[p]):>4}" for p in
+      ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]) +
+      f"{sum(sav):>5}")
+    w()
+    w(f"(b) Bhinnashtakavarga BY HOUSE (House 1 = Lagna = "
+      f"{sign_name(asc_s)}):")
+    w(f"{'House':<6}{'Sign':<12}" + "".join(f"{p[:2]:>4}" for p in
+      ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]) + f"{'Tot':>5}")
     for h in range(1, 13):
         s = (asc_s + h - 1) % 12
-        w(f"  House {h:2d} ({sign_name(s):<11}): {sav[s]} bindus")
+        w(f"{h:<6}{SIGNS[s]:<12}" +
+          "".join(f"{bav[p][s]:>4}" for p in
+                  ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"]) +
+          f"{sav[s]:>5}")
+    w()
+    w(f"Strongest house by SAV : House "
+      f"{max(range(1,13), key=lambda h: sav[(asc_s+h-1)%12])}")
+    w(f"Weakest house by SAV   : House "
+      f"{min(range(1,13), key=lambda h: sav[(asc_s+h-1)%12])}")
+    w("SAV totals are unreduced (no Trikona / Ekadhipatya shodhana applied).")
 
     # ---------------- Aspects
     sec("Planet Drishti / Aspects")
