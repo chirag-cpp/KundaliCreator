@@ -11,6 +11,21 @@ st.set_page_config(page_title="Kundali Generator", page_icon="🔯",
 st.title("Kundali Generator")
 st.caption("Lahiri ayanamsa · whole-sign houses · Swiss Ephemeris · fully offline")
 
+page = st.radio("", ["Kundali report", "Vedic numerology"],
+                horizontal=True, label_visibility="collapsed")
+
+if page == "Vedic numerology":
+    import num_ui
+    st.caption("Ank Jyotish — needs the date of birth only. "
+               "No birth time, place or ephemeris.")
+    ndob = st.date_input("Date of birth", value=dt.date(1990, 1, 1),
+                         min_value=dt.date(1900, 1, 1),
+                         max_value=dt.date(2100, 12, 31),
+                         format="DD/MM/YYYY", key="num_dob")
+    st.divider()
+    num_ui.render(ndob)
+    st.stop()
+
 name = st.text_input("Full name (optional)",
                      help="Only used for the Chaldean / Pythagorean name numbers")
 

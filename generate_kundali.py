@@ -84,20 +84,6 @@ def build_report(**kw):
     w(f"Ayanamsa    : {ch.ayanamsa_name} = {dms(ch.ayanamsa, sign_rel=False)}")
     w(f"House system: Whole sign (Rashi = Bhava)")
 
-    # ---------------- numerology
-    sec("Numerology")
-    d = ch.local
-    mulank = digit_sum(d.day)
-    bhagyank = digit_sum(sum(int(c) for c in d.strftime("%d%m%Y")))
-    w(f"Mulank (Root/Driver number)  : {mulank}")
-    w(f"Bhagyank (Destiny number)    : {bhagyank}")
-    if a.name:
-        w(f"Chaldean name number         : {name_number(a.name, CHALDEAN)}")
-        w(f"Pythagorean name number      : {name_number(a.name, PYTHAGOREAN)}")
-    else:
-        w("Chaldean name number         : (name not supplied)")
-        w("Pythagorean name number      : (name not supplied)")
-
     # ---------------- basic details
     sec("Basic Birth Details")
     asc_s = ch.asc_sign
@@ -318,6 +304,79 @@ def build_report(**kw):
         v = sl[k]
         w(f"{k:<14}: {sign_name(int(v // 30))}  {dms(v)}")
     w(f"{'Indu Lagna':<14}: {sign_name(sl['Indu Lagna'])}")
+
+    # ---------------- vedic numerology (Ank Jyotish)
+    sec("Vedic Numerology (Ank Jyotish)")
+    import numerology as NU
+    bd = ch.local.date()
+    def _pl(n):
+        a, b = NU.PLANET[n], NU.SANSKRIT[n]
+        return a if a == b else f"{a} / {b}"
+    w(f"Mulank (Basic Number)    : {NU.mulank(bd)} ({_pl(NU.mulank(bd))})")
+    w(f"Bhagyank (Destiny Number): {NU.bhagyank(bd)} ({_pl(NU.bhagyank(bd))})")
+    if a.name:
+        w(f"Chaldean name number     : {name_number(a.name, CHALDEAN)}")
+        w(f"Pythagorean name number  : {name_number(a.name, PYTHAGOREAN)}")
+    else:
+        w("Chaldean name number     : (name not supplied)")
+        w("Pythagorean name number  : (name not supplied)")
+    w()
+    w("3x3 Vedic Grid (digits of DD MM YY + Mulank + Bhagyank):")
+    for ln in NU.render_grid(bd):
+        w("  " + ln)
+    cnt = NU.grid_counts(bd)
+    missing = [str(n) for n in range(1, 10) if cnt[n] == 0]
+    w()
+    w(f"  Missing numbers : {', '.join(missing) if missing else 'none'}")
+    w(f"  Repeated numbers: " +
+      (", ".join(f"{n} x{cnt[n]}" for n in range(1, 10) if cnt[n] > 1) or "none"))
+
+    act = NU.active(bd)
+    w()
+    w(f"ACTIVE NUMEROLOGY PERIODS (as of {act['date']}):")
+    for lvl in ("MD", "AD", "PD"):
+        p = act[lvl]
+        if p:
+            nm = {"MD": "Mahadasha", "AD": "Antardasha",
+                  "PD": "Pratyantardasha"}[lvl]
+            w(f"  {nm:<16}: {p['number']} {p['planet']:<8} "
+              f"{p['start']} to {p['end']}")
+    if act["DD"]:
+        w(f"  {'Daily Dasha':<16}: {act['DD']['number']} {act['DD']['planet']}")
+
+    w()
+    w("MAHADASHA PROGRESSION (starts at Mulank, cycles 1-9, n years each):")
+    w(f"  {'MD':<4}{'Planet':<9}{'Years':<7}{'Age':<10}{'From':<12}{'To':<12}")
+    for m in NU.mahadashas(bd, 9):
+        w(f"  {m['number']:<4}{m['planet']:<9}{m['years']:<7}"
+          f"{str(m['age_from'])+'-'+str(m['age_to']):<10}"
+          f"{str(m['start']):<12}{str(m['end']):<12}")
+    w("  (a full cycle is 45 years, then it repeats)")
+
+    yr = act["AD"]["year"]
+    w()
+    w(f"ANTARDASHA — annual, birthday to birthday ({yr-3} to {yr+7}):")
+    w(f"  {'Year':<7}{'AD':<4}{'Planet':<9}{'From':<12}{'To':<12}  derivation")
+    for a in NU.antardashas(bd, yr - 3, yr + 7):
+        d, m_, y_, wd = a["parts"]
+        mark = "  <-- active" if a["year"] == yr else ""
+        w(f"  {a['year']:<7}{a['number']:<4}{a['planet']:<9}"
+          f"{str(a['start']):<12}{str(a['end']):<12}  "
+          f"{d}+{m_}+{y_}+{wd}={d+m_+y_+wd}{mark}")
+
+    w()
+    w(f"PRATYANTARDASHA — 9 sub-periods of the {yr} Antardasha:")
+    w(f"  {'PD':<4}{'Planet':<9}{'Days':<6}{'From':<12}{'To':<12}")
+    for p in NU.pratyantardashas(act["AD"]["number"], act["AD"]["start"]):
+        mark = "  <-- active" if act["PD"] and p["start"] == act["PD"]["start"] else ""
+        w(f"  {p['number']:<4}{p['planet']:<9}{p['days']:<6}"
+          f"{str(p['start']):<12}{str(p['end']):<12}{mark}")
+    w("  (durations 8/16/24/32/41/49/57/65/73 days = 365 total)")
+    w()
+    w("NOTE: this numerology dasha system is INDEPENDENT of the Vimshottari")
+    w("dasha above. It derives from the calendar date of birth alone and uses")
+    w("no birth time, coordinates or ephemeris. The two will not agree, and")
+    w("are not meant to.")
 
     # ---------------- conventions
     sec("Conventions & Notes")

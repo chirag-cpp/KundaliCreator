@@ -329,6 +329,7 @@ class Chart:
 
     # ----- Special Lagnas ---------------------------------------------------
     def special_lagnas(self):
+        _lahiri()
         sun_rise = norm(swe.calc_ut(self.jd_sunrise, swe.SUN, FLAGS)[0][0])
         ghatis = (self.jd - self.jd_sunrise) * 60.0          # 1 day = 60 ghatis
         bl = norm(sun_rise + ghatis * 6)        # 1 sign / 5 ghatis

@@ -72,3 +72,36 @@ true node for Rahu, 7-karaka Chara scheme, Vimshottari year = 365.2425 d.
 Ashtakavarga grids are printed BOTH by sign and by house. Note that many
 apps label this grid "RN" meaning Rashi Number (Aries = 1), which is NOT
 the house number unless the Lagna is in Aries.
+
+VEDIC NUMEROLOGY (ANK JYOTISH) — added as a separate section
+------------------------------------------------------------
+Independent of Vimshottari. Uses the calendar date of birth only: no
+birth time, coordinates or ephemeris. The two dasha systems will not
+agree and are not meant to.
+
+Rules (per published Ank Jyotish method, validated against two charts):
+  Mulank      digit sum of the birth DAY, reduced to 1-9
+  Bhagyank    digit sum of the whole birth DATE, reduced to 1-9
+  3x3 grid    digits of DD MM YY (two-digit year, zeros dropped) plus
+              Mulank and Bhagyank, each in its planet's fixed cell:
+                 Thought  Will   Action
+      Mental       3 Jup   1 Sun  9 Mars
+      Emotion      6 Ven   7 Ket  5 Mer
+      Practical    2 Moo   8 Sat  4 Rah
+  Mahadasha   starts at the Mulank, then cycles 1-9; each lasts as many
+              years as its own number. Full cycle = 45 years, repeating.
+  Antardasha  one per year, birthday to birthday:
+              reduce(reduced birth day + birth month
+                     + reduced last two digits of the year
+                     + weekday number of that year's birthday)
+              Weekday numbers: Sun 1, Mon 2, Tue 9, Wed 5, Thu 3,
+              Fri 6, Sat 8.
+  Pratyantar  9 per Antardasha, starting at the Antardasha number and
+              cycling 1-9. Fixed durations in days:
+              1:8  2:16  3:24  4:32  5:41  6:49  7:57  8:65  9:73
+              (total 365)
+  Daily Dasha reduce(active Pratyantar number + weekday number)
+
+VALIDATION: grid, Mahadasha spans, all 21 observed Antardasha numbers
+and all 9 Pratyantardasha date boundaries reproduce a reference app
+exactly, across two independent birth dates.
