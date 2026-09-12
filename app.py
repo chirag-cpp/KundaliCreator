@@ -21,7 +21,7 @@ st.set_page_config(page_title="Kundali Generator", page_icon="🔯",
 st.title("Kundali Generator")
 st.caption("Lahiri ayanamsa · whole-sign houses · Swiss Ephemeris · fully offline")
 
-page = st.radio("", ["Kundali report", "Vedic numerology", "KP chart"],
+page = st.radio("Section", ["Kundali report", "Vedic numerology", "KP chart"],
                 horizontal=True, label_visibility="collapsed")
 
 # --------------------------------------------------------------- numerology

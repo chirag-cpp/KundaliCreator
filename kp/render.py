@@ -27,13 +27,18 @@ PLANET_SEQ = ("Sun", "Moon", "Mars", "Mercury", "Jupiter",
               "Venus", "Saturn", "Rahu", "Ketu")
 
 
-# --------------------------------------------------------------- caching
-@st.cache_data(show_spinner=False)
+# --------------------------------------------------------------- no caching
+# Deliberately uncached. st.cache_data pickles its return value, and KPChart
+# holds a MappingProxyType (the read-only planet mapping) which cannot be
+# pickled -- it raised UnserializableReturnValueError at runtime.
+#
+# Caching was never worth it anyway: build_chart is ~0.5 ms and a full
+# sensitivity scan (9 charts) is ~2.5 ms. Making the chart picklable to save
+# half a millisecond would trade a real immutability guarantee for nothing.
 def _cached_chart(key: tuple, _birth: BirthInput) -> KPChart:
     return build_chart(_birth)
 
 
-@st.cache_data(show_spinner=False)
 def _cached_scan(key: tuple, _birth: BirthInput, window: float, step: float):
     return scan(_birth, window, step)
 
@@ -98,9 +103,28 @@ def stability_frame(report) -> pd.DataFrame:
 
 
 # --------------------------------------------------------------- helpers
+# Streamlit deprecated use_container_width in favour of width="stretch".
+# Probe once at import so the module works on both old and new versions.
+def _width_kwargs() -> dict:
+    import inspect
+    try:
+        params = inspect.signature(st.dataframe).parameters
+    except (TypeError, ValueError):                  # pragma: no cover
+        return {"use_container_width": True}
+    return {"width": "stretch"} if "width" in params else {
+        "use_container_width": True}
+
+
+_WIDTH = _width_kwargs()
+
+
 def _table(df: pd.DataFrame, config: dict, height: int | None = None) -> None:
-    st.dataframe(df, use_container_width=True, hide_index=True,
-                 column_config=config, height=height)
+    # height must be omitted entirely when unset -- newer Streamlit rejects
+    # height=None rather than treating it as "auto".
+    kwargs = {"hide_index": True, "column_config": config, **_WIDTH}
+    if height is not None:
+        kwargs["height"] = height
+    st.dataframe(df, **kwargs)
 
 
 _LIST_COL = st.column_config.ListColumn if hasattr(

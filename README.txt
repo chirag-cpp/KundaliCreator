@@ -140,3 +140,13 @@ RUNNING THE TESTS
 -----------------
   pip install pytest
   python -m pytest tests/ -q
+
+tests/test_app_pages.py drives the real Streamlit widgets via
+streamlit.testing.v1.AppTest. A plain "does the server return 200" boot check
+does NOT execute page code and will miss render-time errors -- run this suite
+before every push.
+
+Note: kp/render.py deliberately does NOT use st.cache_data. KPChart holds a
+MappingProxyType (the read-only planet mapping), which cannot be pickled, and
+st.cache_data pickles its return value. Building a chart costs ~0.5 ms and a
+full sensitivity scan ~2.5 ms, so there is nothing to cache.
