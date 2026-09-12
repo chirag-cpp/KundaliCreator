@@ -27,7 +27,10 @@ Times are 24-hour. 10:50 PM = 22:50.
 
 FILES
 -----
-app.py               Streamlit UI (form, place picker, report, download)
+app.py               Streamlit UI (page switch: report / numerology / KP)
+birth_form.py        shared date/time/place form used by the report and KP pages
+kp/                  Krishnamurti Paddhati engine (see kp/README.md)
+tests/               pytest suite: 51 tests, incl. cross-engine isolation
 generate_kundali.py  build_report() + CLI
 core.py              ephemeris, ayanamsa guard, geocoder, panchanga,
                      divisional charts, Jaimini
@@ -105,3 +108,35 @@ Rules (per published Ank Jyotish method, validated against two charts):
 VALIDATION: grid, Mahadasha spans, all 21 observed Antardasha numbers
 and all 9 Pratyantardasha date boundaries reproduce a reference app
 exactly, across two independent birth dates.
+
+
+KP CHART PAGE (added)
+---------------------
+Third page on the top switcher. Krishnamurti Paddhati: Krishnamurti ayanamsa,
+Placidus cusps, 243 star/sub spans, four-level significators, ruling planets,
+and a birth-time precision panel.
+
+Deliberate divergences from the Kundali report page, both stated in the KP
+page caption:
+  - ayanamsa   KP uses Krishnamurti (classic), the report uses Lahiri
+  - houses     KP uses Placidus cusps, the report uses whole-sign
+  - node       KP uses the MEAN node, the report uses the TRUE node
+House placements will therefore differ between the two pages. That is correct,
+not a bug. To make the node agree, set _NODE in kp/ephemeris.py to
+swe.TRUE_NODE and regenerate the golden fixture.
+
+SIDEREAL MODE SAFETY
+--------------------
+Swiss Ephemeris holds the sidereal mode as write-only global state -- there is
+no getter. Two independent guards now cover it:
+  1. core.py calls _lahiri() immediately before every sidereal calculation and
+     ayanamsa_check() re-asserts then verifies, so it is self-healing.
+  2. kp/ tracks the mode itself and restores the previous value in a finally
+     block; app.py calls configure_default(swe.SIDM_LAHIRI) at startup.
+tests/test_integration.py proves a full Kundali report is byte-identical before
+and after KP work, including after a KP exception.
+
+RUNNING THE TESTS
+-----------------
+  pip install pytest
+  python -m pytest tests/ -q

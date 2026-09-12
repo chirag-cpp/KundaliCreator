@@ -1,0 +1,553 @@
+{
+  "ascendant": 53.870948291,
+  "ayanamsa_deg": 23.644407419,
+  "cusps": [
+    {
+      "house": 1,
+      "lon": 53.870948291,
+      "nakshatra": "Mrigashira",
+      "pada": 1,
+      "sign": "Taurus",
+      "star": "Mars",
+      "sub": "Mars",
+      "subsub": "Ketu"
+    },
+    {
+      "house": 2,
+      "lon": 76.970154732,
+      "nakshatra": "Ardra",
+      "pada": 4,
+      "sign": "Gemini",
+      "star": "Rahu",
+      "sub": "Venus",
+      "subsub": "Saturn"
+    },
+    {
+      "house": 3,
+      "lon": 99.719399362,
+      "nakshatra": "Pushya",
+      "pada": 2,
+      "sign": "Cancer",
+      "star": "Saturn",
+      "sub": "Venus",
+      "subsub": "Saturn"
+    },
+    {
+      "house": 4,
+      "lon": 125.770965022,
+      "nakshatra": "Magha",
+      "pada": 2,
+      "sign": "Leo",
+      "star": "Ketu",
+      "sub": "Rahu",
+      "subsub": "Rahu"
+    },
+    {
+      "house": 5,
+      "lon": 158.186127306,
+      "nakshatra": "U.Phalguni",
+      "pada": 4,
+      "sign": "Virgo",
+      "star": "Sun",
+      "sub": "Venus",
+      "subsub": "Sun"
+    },
+    {
+      "house": 6,
+      "lon": 196.511916188,
+      "nakshatra": "Swati",
+      "pada": 3,
+      "sign": "Libra",
+      "star": "Rahu",
+      "sub": "Venus",
+      "subsub": "Jupiter"
+    },
+    {
+      "house": 7,
+      "lon": 233.870948291,
+      "nakshatra": "Jyeshtha",
+      "pada": 3,
+      "sign": "Scorpio",
+      "star": "Mercury",
+      "sub": "Mars",
+      "subsub": "Ketu"
+    },
+    {
+      "house": 8,
+      "lon": 256.970154732,
+      "nakshatra": "P.Ashadha",
+      "pada": 2,
+      "sign": "Sagittarius",
+      "star": "Venus",
+      "sub": "Moon",
+      "subsub": "Mercury"
+    },
+    {
+      "house": 9,
+      "lon": 279.719399362,
+      "nakshatra": "U.Ashadha",
+      "pada": 4,
+      "sign": "Capricorn",
+      "star": "Sun",
+      "sub": "Venus",
+      "subsub": "Mercury"
+    },
+    {
+      "house": 10,
+      "lon": 305.770965022,
+      "nakshatra": "Dhanishta",
+      "pada": 4,
+      "sign": "Aquarius",
+      "star": "Mars",
+      "sub": "Moon",
+      "subsub": "Rahu"
+    },
+    {
+      "house": 11,
+      "lon": 338.186127306,
+      "nakshatra": "U.Bhadrapada",
+      "pada": 2,
+      "sign": "Pisces",
+      "star": "Saturn",
+      "sub": "Venus",
+      "subsub": "Venus"
+    },
+    {
+      "house": 12,
+      "lon": 16.511916188,
+      "nakshatra": "Bharani",
+      "pada": 1,
+      "sign": "Aries",
+      "star": "Venus",
+      "sub": "Moon",
+      "subsub": "Rahu"
+    }
+  ],
+  "ownerships": {
+    "Jupiter": [
+      8,
+      11
+    ],
+    "Mars": [
+      7,
+      12
+    ],
+    "Mercury": [
+      2,
+      5
+    ],
+    "Moon": [
+      3
+    ],
+    "Saturn": [
+      9,
+      10
+    ],
+    "Sun": [
+      4
+    ],
+    "Venus": [
+      1,
+      6
+    ]
+  },
+  "planet_significations": {
+    "Jupiter": {
+      "positional_status": false,
+      "primary": [
+        2,
+        4,
+        5
+      ],
+      "secondary": [
+        4,
+        8,
+        11
+      ],
+      "star": "Ketu"
+    },
+    "Ketu": {
+      "positional_status": false,
+      "primary": [
+        4,
+        8,
+        11,
+        2,
+        5
+      ],
+      "secondary": [
+        2
+      ],
+      "star": "Jupiter"
+    },
+    "Mars": {
+      "positional_status": true,
+      "primary": [
+        7,
+        3
+      ],
+      "secondary": [
+        5,
+        7,
+        12
+      ],
+      "star": "Moon"
+    },
+    "Mercury": {
+      "positional_status": false,
+      "primary": [
+        3,
+        1,
+        6
+      ],
+      "secondary": [
+        4,
+        2,
+        5
+      ],
+      "star": "Venus"
+    },
+    "Moon": {
+      "positional_status": false,
+      "primary": [
+        2,
+        4,
+        5
+      ],
+      "secondary": [
+        7,
+        3
+      ],
+      "star": "Ketu"
+    },
+    "Rahu": {
+      "positional_status": true,
+      "primary": [
+        3,
+        1,
+        6,
+        4,
+        8,
+        11
+      ],
+      "secondary": [
+        8
+      ],
+      "star": "Venus"
+    },
+    "Saturn": {
+      "positional_status": true,
+      "primary": [
+        4
+      ],
+      "secondary": [
+        8,
+        9,
+        10
+      ],
+      "star": "Sun"
+    },
+    "Sun": {
+      "positional_status": true,
+      "primary": [
+        4
+      ],
+      "secondary": [
+        4
+      ],
+      "star": "Sun"
+    },
+    "Venus": {
+      "positional_status": false,
+      "primary": [
+        4,
+        2,
+        5
+      ],
+      "secondary": [
+        3,
+        1,
+        6
+      ],
+      "star": "Mercury"
+    }
+  },
+  "planets": [
+    {
+      "house": 4,
+      "lon": 149.698676198,
+      "nakshatra": "U.Phalguni",
+      "name": "Sun",
+      "pada": 1,
+      "retro": false,
+      "sign": "Leo",
+      "star": "Sun",
+      "sub": "Rahu",
+      "subsub": "Jupiter"
+    },
+    {
+      "house": 7,
+      "lon": 248.456701972,
+      "nakshatra": "Mula",
+      "name": "Moon",
+      "pada": 3,
+      "retro": false,
+      "sign": "Sagittarius",
+      "star": "Ketu",
+      "sub": "Jupiter",
+      "subsub": "Venus"
+    },
+    {
+      "house": 5,
+      "lon": 166.366224301,
+      "nakshatra": "Hasta",
+      "name": "Mars",
+      "pada": 2,
+      "retro": false,
+      "sign": "Virgo",
+      "star": "Moon",
+      "sub": "Saturn",
+      "subsub": "Ketu"
+    },
+    {
+      "house": 4,
+      "lon": 135.573774631,
+      "nakshatra": "P.Phalguni",
+      "name": "Mercury",
+      "pada": 1,
+      "retro": false,
+      "sign": "Leo",
+      "star": "Venus",
+      "sub": "Sun",
+      "subsub": "Sun"
+    },
+    {
+      "house": 4,
+      "lon": 127.29543429,
+      "nakshatra": "Magha",
+      "name": "Jupiter",
+      "pada": 3,
+      "retro": false,
+      "sign": "Leo",
+      "star": "Ketu",
+      "sub": "Rahu",
+      "subsub": "Moon"
+    },
+    {
+      "house": 3,
+      "lon": 117.572943349,
+      "nakshatra": "Ashlesha",
+      "name": "Venus",
+      "pada": 4,
+      "retro": false,
+      "sign": "Cancer",
+      "star": "Mercury",
+      "sub": "Jupiter",
+      "subsub": "Mars"
+    },
+    {
+      "house": 8,
+      "lon": 276.821796895,
+      "nakshatra": "U.Ashadha",
+      "name": "Saturn",
+      "pada": 4,
+      "retro": true,
+      "sign": "Capricorn",
+      "star": "Sun",
+      "sub": "Mercury",
+      "subsub": "Saturn"
+    },
+    {
+      "house": 8,
+      "lon": 261.78531701,
+      "nakshatra": "P.Ashadha",
+      "name": "Rahu",
+      "pada": 3,
+      "retro": true,
+      "sign": "Sagittarius",
+      "star": "Venus",
+      "sub": "Jupiter",
+      "subsub": "Rahu"
+    },
+    {
+      "house": 2,
+      "lon": 81.78531701,
+      "nakshatra": "Punarvasu",
+      "name": "Ketu",
+      "pada": 1,
+      "retro": true,
+      "sign": "Gemini",
+      "star": "Jupiter",
+      "sub": "Saturn",
+      "subsub": "Saturn"
+    }
+  ],
+  "ruling_planets": {
+    "day_lord": "Moon",
+    "ordered": [
+      "Mars",
+      "Venus",
+      "Jupiter",
+      "Ketu",
+      "Moon"
+    ],
+    "sunrise_resolved": true
+  },
+  "significators": [
+    {
+      "A": [],
+      "B": [],
+      "C": [
+        "Mercury",
+        "Rahu"
+      ],
+      "D": [
+        "Venus"
+      ],
+      "house": 1
+    },
+    {
+      "A": [
+        "Moon",
+        "Jupiter"
+      ],
+      "B": [
+        "Ketu"
+      ],
+      "C": [
+        "Venus"
+      ],
+      "D": [
+        "Mercury"
+      ],
+      "house": 2
+    },
+    {
+      "A": [
+        "Mercury",
+        "Rahu"
+      ],
+      "B": [
+        "Venus"
+      ],
+      "C": [
+        "Mars"
+      ],
+      "D": [
+        "Moon"
+      ],
+      "house": 3
+    },
+    {
+      "A": [
+        "Sun",
+        "Venus",
+        "Saturn",
+        "Ketu"
+      ],
+      "B": [
+        "Sun",
+        "Mercury",
+        "Jupiter"
+      ],
+      "C": [
+        "Sun",
+        "Saturn"
+      ],
+      "D": [
+        "Sun"
+      ],
+      "house": 4
+    },
+    {
+      "A": [],
+      "B": [
+        "Mars"
+      ],
+      "C": [
+        "Venus"
+      ],
+      "D": [
+        "Mercury"
+      ],
+      "house": 5
+    },
+    {
+      "A": [],
+      "B": [],
+      "C": [
+        "Mercury",
+        "Rahu"
+      ],
+      "D": [
+        "Venus"
+      ],
+      "house": 6
+    },
+    {
+      "A": [
+        "Mars"
+      ],
+      "B": [
+        "Moon"
+      ],
+      "C": [],
+      "D": [
+        "Mars"
+      ],
+      "house": 7
+    },
+    {
+      "A": [],
+      "B": [
+        "Saturn",
+        "Rahu"
+      ],
+      "C": [
+        "Ketu"
+      ],
+      "D": [
+        "Jupiter"
+      ],
+      "house": 8
+    },
+    {
+      "A": [],
+      "B": [],
+      "C": [],
+      "D": [
+        "Saturn"
+      ],
+      "house": 9
+    },
+    {
+      "A": [],
+      "B": [],
+      "C": [],
+      "D": [
+        "Saturn"
+      ],
+      "house": 10
+    },
+    {
+      "A": [],
+      "B": [],
+      "C": [
+        "Ketu"
+      ],
+      "D": [
+        "Jupiter"
+      ],
+      "house": 11
+    },
+    {
+      "A": [],
+      "B": [],
+      "C": [],
+      "D": [
+        "Mars"
+      ],
+      "house": 12
+    }
+  ]
+}

@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 """Streamlit front-end for the kundali generator."""
 import datetime as dt
+
 import streamlit as st
+import swisseph as swe
+
 from generate_kundali import build_report
-from core import geocode_candidates
+from birth_form import birth_form
+
+# The Lahiri engine assumes Swiss Ephemeris is left in Lahiri sidereal mode.
+# The KP package tracks and restores the mode around its own calls; this tells
+# it what to restore to. core.py additionally re-asserts Lahiri before every
+# calculation, so the two guards are belt and braces.
+from kp import configure_default
+configure_default(swe.SIDM_LAHIRI)
 
 st.set_page_config(page_title="Kundali Generator", page_icon="🔯",
                    layout="centered")
@@ -11,9 +21,10 @@ st.set_page_config(page_title="Kundali Generator", page_icon="🔯",
 st.title("Kundali Generator")
 st.caption("Lahiri ayanamsa · whole-sign houses · Swiss Ephemeris · fully offline")
 
-page = st.radio("", ["Kundali report", "Vedic numerology"],
+page = st.radio("", ["Kundali report", "Vedic numerology", "KP chart"],
                 horizontal=True, label_visibility="collapsed")
 
+# --------------------------------------------------------------- numerology
 if page == "Vedic numerology":
     import num_ui
     st.caption("Ank Jyotish — needs the date of birth only. "
@@ -26,55 +37,32 @@ if page == "Vedic numerology":
     num_ui.render(ndob)
     st.stop()
 
-name = st.text_input("Full name (optional)",
-                     help="Only used for the Chaldean / Pythagorean name numbers")
+# ----------------------------------------------------------------- KP chart
+if page == "KP chart":
+    from kp import BirthInput, PolarLatitudeError
+    from kp.render import render_kp_tab
 
-c1, c2 = st.columns(2)
-with c1:
-    dob = st.date_input("Date of birth", value=dt.date(1990, 1, 1),
-                        min_value=dt.date(1800, 1, 1),
-                        max_value=dt.date(2100, 12, 31), format="DD/MM/YYYY")
-with c2:
-    tob = st.time_input("Time of birth (24h, local)", value=dt.time(12, 0), step=60)
+    st.caption("Krishnamurti Paddhati — a different ayanamsa and house system "
+               "to the Kundali report. House placements will not match, by "
+               "design.")
+    dob, tob, loc, _ = birth_form("kp", want_name=False)
+    st.divider()
 
-mode = st.radio("Birth place", ["Search by name", "Enter coordinates"],
-                horizontal=True)
+    birth = None
+    if loc is not None:
+        try:
+            birth = BirthInput.from_zone(dob.isoformat(), tob.strftime("%H:%M"),
+                                         loc["lat"], loc["lon"], loc["tz"])
+        except PolarLatitudeError as exc:
+            st.error(str(exc))
+        except Exception as exc:                       # bad tz name etc.
+            st.error(f"Could not read the birth details: {exc}")
 
-loc = None
-if mode == "Search by name":
-    p1, p2 = st.columns([3, 1])
-    with p1:
-        query = st.text_input("Town / City", placeholder="e.g. Naya Nangal")
-    with p2:
-        country = st.text_input("Country", value="IN", help="2-letter code")
+    render_kp_tab(birth)
+    st.stop()
 
-    if query.strip():
-        cands = geocode_candidates(query.strip(), country.strip() or None, limit=8)
-        if not cands:
-            st.warning(
-                "No match. The offline database only covers towns above roughly "
-                "15,000 people. Try the nearest larger town — anything within "
-                "~25 km makes no practical difference to the chart — or switch "
-                "to **Enter coordinates**.")
-        else:
-            labels = [f"{c['name']} ({c['country']}) · {c['lat']:.2f}, "
-                      f"{c['lon']:.2f} · {c['tz']}" for c in cands]
-            pick = st.selectbox("Closest matches — pick the right one", labels)
-            loc = cands[labels.index(pick)]
-            if loc["name"].lower() != query.strip().lower():
-                st.caption(f"'{query.strip()}' isn't listed separately; using "
-                           f"**{loc['name']}**.")
-else:
-    p1, p2, p3 = st.columns(3)
-    with p1:
-        lat = st.number_input("Latitude", value=28.6654, format="%.4f")
-    with p2:
-        lon = st.number_input("Longitude", value=77.4391, format="%.4f")
-    with p3:
-        tzname = st.text_input("Timezone", value="Asia/Kolkata",
-                               help="IANA name, e.g. Asia/Kolkata")
-    label = st.text_input("Place label (for the report header)", value="")
-    loc = {"lat": lat, "lon": lon, "tz": tzname.strip(), "label": label.strip()}
+# ------------------------------------------------------------ kundali report
+dob, tob, loc, name = birth_form("rep")
 
 if st.button("Generate report", type="primary", disabled=loc is None):
     try:
